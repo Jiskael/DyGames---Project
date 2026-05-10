@@ -1,0 +1,23 @@
+# Archivos compilados de Maven
+target/
+*.class
+
+# Archivos del IDE
+.idea/
+*.iml
+.vscode/
+*.project
+*.classpath
+.settings/
+
+# Variables de entorno sensibles
+.env
+*.env
+
+# Logs
+*.log
+logs/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
