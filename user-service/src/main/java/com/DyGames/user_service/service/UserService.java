@@ -8,6 +8,9 @@ import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -40,6 +43,53 @@ public class UserService {
         respuesta.setNombre(user.getNombre());
         respuesta.setId(user.getId());
         return respuesta;
-        //11-05-26
     }
+
+    //Obtener todos
+    public List<UserRespuesta> obtenerTodos(){
+        List<User> usuarios = userRepository.findAll();
+        List<UserRespuesta> respuestas = new ArrayList<>();
+        for (User usu : usuarios) {
+            respuestas.add(DTO(usu));
+        }
+        return respuestas;
+    }
+    //Buscar por id
+    public UserRespuesta buscarPorId(Long id){
+        User usuario = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return DTO(usuario);
+    }
+
+    //Buscar por username
+    public UserRespuesta buscarPorNombre(String username){
+        User usuario = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return DTO(usuario);
+    }
+
+    //buscar por email copy paste cddd
+    public UserRespuesta buscarPorEmail(String email){
+        User usuario = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return DTO(usuario);
+    }
+
+    //eliminar
+
+    public void eliminar(Long id){
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("El usuario no existe");
+        }
+        userRepository.deleteById(id);
+    }
+
+    //Actualizar
+    public UserRespuesta actualizar(Long id, UserRequest r) {
+        User usuario = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        usuario.setUsername(r.getUsername());
+        usuario.setEmail(r.getEmail());
+        usuario.setNombre(r.getNombre());
+        usuario.setPfpUrl(r.getPfpUrl());
+        return DTO(userRepository.save(usuario));
+    }
+
 }
