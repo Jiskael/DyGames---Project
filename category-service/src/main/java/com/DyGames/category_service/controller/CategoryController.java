@@ -1,54 +1,68 @@
 package com.DyGames.category_service.controller;
 
-import com.DyGames.category_service.dto.CategoryRequest;
 import com.DyGames.category_service.dto.CategoryRespuesta;
 import com.DyGames.category_service.model.Category;
 import com.DyGames.category_service.service.CategoryService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/categorias")
-@RequiredArgsConstructor
 public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
 
-    //Crear categoria
-    @PostMapping
-    public ResponseEntity<CategoryRespuesta> crearCategoria(@RequestBody @Valid CategoryRequest request) {
-        return ResponseEntity.status(201).body(categoryService.crearCategory(request));
-    }
-
-    //Obtener categorias
     @GetMapping
-    public ResponseEntity<List<CategoryRespuesta>> obtenerCategorias() {
-        return ResponseEntity.ok(categoryService.ObtenerTodasLasCategorias());
+    public ResponseEntity<?> listar() {
+        return ResponseEntity.ok(categoryService.findAll());
     }
 
-    //Buscar categoria por nombre
-    @GetMapping("/nombre/{nombre}")
-    public ResponseEntity<CategoryRespuesta> buscarPorNombre(@PathVariable String nombre) {
-        return ResponseEntity.ok(categoryService.BuscarPorNombre(nombre));
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+        Category cat = categoryService.findById(id);
+        if (cat == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(cat);
     }
 
-    //Actualizar
+    @PostMapping
+    public ResponseEntity<?> registrar(@Valid @RequestBody Category category) {
+        return new ResponseEntity<>(categoryService.save(category), HttpStatus.CREATED);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryRespuesta> actualizarCategoria( @PathVariable Long id, @RequestBody @Valid CategoryRequest r) {
-        return ResponseEntity.ok(categoryService.Actualizar(id,r));
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody Category category) {
+        Category actualizada = categoryService.update(id, category);
+        if (actualizada == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(actualizada);
     }
 
-    //y Eliminar
     @DeleteMapping("/{id}")
-    public ResponseEntity<CategoryRespuesta> eliminarCategoria(@PathVariable Long id) {
-        categoryService.Eliminar(id);
+    public ResponseEntity<?> eliminar(@PathVariable Long id) {
+        categoryService.delete(id);
         return ResponseEntity.noContent().build();
+    }
 
+    // Endpoints DTO
+    @GetMapping("/listado")
+    public ResponseEntity<?> listarDTO() {
+        return ResponseEntity.ok(categoryService.findDTOList());
+    }
+
+    @GetMapping("/listado/{id}")
+    public ResponseEntity<?> buscarPorIdDTO(@PathVariable Long id) {
+        CategoryRespuesta cr = categoryService.findDTO(id);
+        if (cr == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(cr);
+    }
+
+    @GetMapping("/nombre/{nombre}")
+    public ResponseEntity<?> buscarPorNombre(@PathVariable String nombre) {
+        CategoryRespuesta cr = categoryService.findByNombreDTO(nombre);
+        if (cr == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(cr);
     }
 }
