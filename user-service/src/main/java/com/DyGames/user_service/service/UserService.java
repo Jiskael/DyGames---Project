@@ -1,14 +1,11 @@
 package com.DyGames.user_service.service;
 
-import com.DyGames.user_service.dto.UserRequest;
 import com.DyGames.user_service.dto.UserRespuesta;
+import com.DyGames.user_service.mapper.UserMapper;
 import com.DyGames.user_service.model.User;
 import com.DyGames.user_service.repository.UserRepository;
-import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,79 +14,52 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    //Metodo crear usuario
-    public UserRespuesta crearUsuario(UserRequest r) {
-        if (userRepository.existsByUsername(r.getUsername())) {
+    @Autowired
+    private UserMapper userMapper;
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    public User save(User user) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("El username ya existe");
         }
-        User usuario = new User();
-        usuario.setUsername(r.getUsername());
-        usuario.setEmail(r.getEmail());
-        usuario.setNombre(r.getNombre());
-        usuario.setPfpUrl(r.getPfpUrl());
-        usuario.setAuthId(r.getAuthId());
-
-        User user = userRepository.save(usuario);
-        return DTO(user);
-
+        return userRepository.save(user);
     }
 
-    //Copy paste de convertir modelo a DTO
-    private UserRespuesta DTO(User user) {
-        UserRespuesta respuesta = new UserRespuesta();
-        respuesta.setUsername(user.getUsername());
-        respuesta.setEmail(user.getEmail());
-        respuesta.setPfpUrl(user.getPfpUrl());
-        respuesta.setNombre(user.getNombre());
-        respuesta.setId(user.getId());
-        return respuesta;
+    public User update(Long id, User user) {
+        User u = userRepository.findById(id).orElse(null);
+        if (u == null) return null;
+        u.setUsername(user.getUsername());
+        u.setEmail(user.getEmail());
+        u.setNombre(user.getNombre());
+        u.setPfpUrl(user.getPfpUrl());
+        return userRepository.save(u);
     }
 
-    //Obtener todos
-    public List<UserRespuesta> obtenerTodos(){
-        List<User> usuarios = userRepository.findAll();
-        List<UserRespuesta> respuestas = new ArrayList<>();
-        for (User usu : usuarios) {
-            respuestas.add(DTO(usu));
-        }
-        return respuestas;
-    }
-    //Buscar por id
-    public UserRespuesta buscarPorId(Long id){
-        User usuario = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return DTO(usuario);
-    }
-
-    //Buscar por username
-    public UserRespuesta buscarPorNombre(String username){
-        User usuario = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return DTO(usuario);
-    }
-
-    //buscar por email copy paste cddd
-    public UserRespuesta buscarPorEmail(String email){
-        User usuario = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return DTO(usuario);
-    }
-
-    //eliminar
-
-    public void eliminar(Long id){
-        if (!userRepository.existsById(id)) {
-            throw new RuntimeException("El usuario no existe");
-        }
+    public void delete(Long id) {
         userRepository.deleteById(id);
     }
 
-    //Actualizar
-    public UserRespuesta actualizar(Long id, UserRequest r) {
-        User usuario = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        usuario.setUsername(r.getUsername());
-        usuario.setEmail(r.getEmail());
-        usuario.setNombre(r.getNombre());
-        usuario.setPfpUrl(r.getPfpUrl());
-        return DTO(userRepository.save(usuario));
+    // aqui es copy paste de los metodos dto de category pero ahora con user gracias a mapper
+    public UserRespuesta findDTO(Long id) {
+        return userMapper.toDTO(findById(id));
     }
 
+    public List<UserRespuesta> findDTOList() {
+        return userMapper.toDTOList(findAll());
+    }
+
+    public UserRespuesta findByUsernameDTO(String username) {
+        return userMapper.toDTO(userRepository.findByUsername(username).orElse(null));
+    }
+
+    public UserRespuesta findByEmailDTO(String email) {
+        return userMapper.toDTO(userRepository.findByEmail(email).orElse(null));
+    }
 }
