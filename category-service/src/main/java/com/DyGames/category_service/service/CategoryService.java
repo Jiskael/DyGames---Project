@@ -17,6 +17,8 @@ public class CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    // Empezamos a hacer el CRUD y despues lo mismo con user-service
+
     public List<Category> findAll() {
         return categoryRepository.findAll();
     }
