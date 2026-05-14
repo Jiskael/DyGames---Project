@@ -47,7 +47,7 @@ public class GameService {
         gameRepository.deleteById(id);
     }
 
-    // Metodos DTO
+    // Metodos DTO revisar
     public GameRespuesta findDTO(Long id) {
         return gameMapper.toDTO(findById(id));
     }
