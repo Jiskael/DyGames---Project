@@ -1,0 +1,35 @@
+package com.DyGames.cart_service.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "carrito")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Cart {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull(message = "El usuario no puede estar vacio.")
+    @Column(name = "usuario_id", nullable = false)
+    private Long usuarioId;
+
+    @NotNull(message = "El juego no puede estar vacio.")
+    @Column(name = "juego_id", nullable = false)
+    private Long juegoId;
+
+    @NotNull(message = "El precio no puede estar vacio.")
+    @Column(nullable = false)
+    private Double precio;
+
+    @Column(name = "creado_en", nullable = false)
+    private LocalDateTime creadoEn = LocalDateTime.now();
+}
