@@ -34,6 +34,6 @@ public class Auth {
     @Column(nullable = false)
     private Boolean activo = true;
 
-    @Column(name = "creado_en", nullable = false)
+    @Column(comment = "creado_en", nullable = false)
     private LocalDateTime creadoEn = LocalDateTime.now();
 }

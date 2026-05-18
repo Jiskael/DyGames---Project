@@ -28,7 +28,7 @@ public class CategoryService {
     }
 
     public Category save(Category category) {
-        if (categoryRepository.existsByName(category.getNombre())) {
+        if (categoryRepository.existsByNombre(category.getNombre())) {
             throw new RuntimeException("El nombre ya existe en el sistema");
         }
         return categoryRepository.save(category);
@@ -57,7 +57,7 @@ public class CategoryService {
     }
 
     public CategoryRespuesta findByNombreDTO(String nombre) {
-        Category cat = categoryRepository.findByName(nombre).orElse(null);
+        Category cat = categoryRepository.findByNombre(nombre).orElse(null);
         return categoryMapper.toDTO(cat);
     }
 }

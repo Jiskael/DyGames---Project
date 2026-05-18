@@ -21,7 +21,7 @@ public class Category {
     @Column(nullable = false, unique = true, length = 100)
     private String nombre;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(length = 255)
     private String descripcion;
 
     @Column(name = "icon_url")
