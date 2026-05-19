@@ -20,12 +20,12 @@
 3. Arrancar en el orden indicado
 
 ## Endpoints principales
-- Categorias:  GET http://localhost:8080/api/v1/categorias
-- Juegos:      GET http://localhost:8080/api/v1/juegos
-- Usuarios:    GET http://localhost:8080/api/v1/usuarios
-- Auth:        POST http://localhost:8080/api/v1/auth/login
-- Carrito:     GET http://localhost:8080/api/v1/carrito
-- Ordenes:     POST http://localhost:8080/api/v1/ordenes/crear/{usuarioId}
-- Pagos:       GET http://localhost:8080/api/v1/pagos
-- Biblioteca:  GET http://localhost:8080/api/v1/biblioteca
-- Resenas:     GET http://localhost:8080/api/v1/resenas
+- Categorias:  GET http://localhost:8084/api/v1/categorias
+- Juegos:      GET http://localhost:8083/api/v1/juegos
+- Usuarios:    GET http://localhost:8082/api/v1/usuarios
+- Auth:        POST http://localhost:8085/api/v1/auth/login
+- Carrito:     GET http://localhost:8089/api/v1/carrito
+- Ordenes:     POST http://localhost:8090/api/v1/ordenes/crear/{usuarioId}
+- Pagos:       GET http://localhost:8087/api/v1/pagos
+- Biblioteca:  GET http://localhost:8086/api/v1/biblioteca
+- Resenas:     GET http://localhost:8088/api/v1/resenas
