@@ -45,7 +45,8 @@ public class AuthController {
         return ResponseEntity.ok(auth);
     }
 
-    // Actualizar rol o estado    @PutMapping("/{id}")
+    // Actualizar rol o estado
+    @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id,
                                         @RequestBody Auth auth) {
         Auth actualizado = authService.update(id, auth);
