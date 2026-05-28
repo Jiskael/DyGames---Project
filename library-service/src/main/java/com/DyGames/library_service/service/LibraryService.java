@@ -4,6 +4,7 @@ import com.DyGames.library_service.dto.LibraryRespuesta;
 import com.DyGames.library_service.mapper.LibraryMapper;
 import com.DyGames.library_service.model.Library;
 import com.DyGames.library_service.repository.LibraryRepository;
+import com.DyGames.library_service.exception.JuegoYaEnBibliotecaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -28,7 +29,7 @@ public class LibraryService {
     public Library save(Library library) {
         if (libraryRepository.existsByUsuarioIdAndJuegoId(
                 library.getUsuarioId(), library.getJuegoId())) {
-            throw new RuntimeException("El usuario ya tiene este juego en su biblioteca");
+            throw new JuegoYaEnBibliotecaException("El usuario ya tiene este juego en su biblioteca");
         }
         return libraryRepository.save(library);
     }

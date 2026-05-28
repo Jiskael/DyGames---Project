@@ -1,7 +1,6 @@
 package com.DyGames.game_service.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,16 +18,16 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "El titulo no puede estar vacio.")
+    @NotNull(message = "El titulo no puede estar vacio.")
     @Column(nullable = false, length = 150)
     private String titulo;
 
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @NotBlank(message = "El desarrollador no puede estar vacio.")
-    @Column(nullable = false, length = 100)
-    private String desarrollador;
+    @NotNull(message = "El desarrollador no puede estar vacio.")
+    @Column(name = "desarrollador_id", nullable = false)
+    private Long desarrolladorId;
 
     @NotNull(message = "El precio no puede estar vacio.")
     @Column(nullable = false)

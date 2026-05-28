@@ -59,7 +59,7 @@ public class GameController {
         return ResponseEntity.ok(gr);
     }
 
-    // Reportes revisar
+    // Reportes
     @GetMapping("/categoria/{categoriaId}")
     public ResponseEntity<?> buscarPorCategoria(@PathVariable Long categoriaId) {
         return ResponseEntity.ok(gameService.findByCategoria(categoriaId));
@@ -76,9 +76,9 @@ public class GameController {
         return ResponseEntity.ok(gameService.findByRangoPrecio(min, max));
     }
 
-    @GetMapping("/desarrollador/{desarrollador}")
-    public ResponseEntity<?> buscarPorDesarrollador(@PathVariable String desarrollador) {
-        return ResponseEntity.ok(gameService.findByDesarrollador(desarrollador));
+    @GetMapping("/desarrollador/{desarrolladorId}")
+    public ResponseEntity<?> buscarPorDesarrollador(@PathVariable Long desarrolladorId) {
+        return ResponseEntity.ok(gameService.findByDesarrollador(desarrolladorId));
     }
 
     @GetMapping("/buscar/{titulo}")

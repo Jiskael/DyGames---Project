@@ -4,6 +4,7 @@ import com.DyGames.category_service.dto.CategoryRespuesta;
 import com.DyGames.category_service.mapper.CategoryMapper;
 import com.DyGames.category_service.model.Category;
 import com.DyGames.category_service.repository.CategoryRepository;
+import com.DyGames.category_service.exception.NombreCategoriaExisteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -29,7 +30,7 @@ public class CategoryService {
 
     public Category save(Category category) {
         if (categoryRepository.existsByNombre(category.getNombre())) {
-            throw new RuntimeException("El nombre ya existe en el sistema");
+            throw new NombreCategoriaExisteException("El nombre ya existe en el sistema");
         }
         return categoryRepository.save(category);
     }

@@ -1,5 +1,8 @@
 package com.DyGames.library_service.dto;
 
+import com.DyGames.library_service.dto.UserRespuesta;
+import com.DyGames.library_service.dto.GameRespuesta;
+import com.DyGames.library_service.dto.OrderRespuesta;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -7,8 +10,8 @@ import java.time.LocalDateTime;
 public class LibraryRespuesta {
 
     private Long id;
-    private Long usuarioId;
-    private Long juegoId;
-    private Long ordenId;
+    private UserRespuesta usuario;
+    private GameRespuesta juego;
+    private OrderRespuesta orden;
     private LocalDateTime adquiridoEn;
 }

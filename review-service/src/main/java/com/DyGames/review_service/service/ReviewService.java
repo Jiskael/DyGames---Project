@@ -4,6 +4,7 @@ import com.DyGames.review_service.dto.ReviewRespuesta;
 import com.DyGames.review_service.mapper.ReviewMapper;
 import com.DyGames.review_service.model.Review;
 import com.DyGames.review_service.repository.ReviewRepository;
+import com.DyGames.review_service.exception.ResenaYaExisteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ReviewService {
     public Review save(Review review) {
         if (reviewRepository.existsByUsuarioIdAndJuegoId(
                 review.getUsuarioId(), review.getJuegoId())) {
-            throw new RuntimeException("El usuario ya hizo una resena de este juego");
+            throw new ResenaYaExisteException("El usuario ya hizo una resena de este juego");
         }
         return reviewRepository.save(review);
     }

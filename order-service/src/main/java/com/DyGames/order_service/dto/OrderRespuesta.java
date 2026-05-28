@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public class OrderRespuesta {
 
     private Long id;
-    private Long usuarioId;
+    private UserRespuesta usuario;
     private Double total;
     private String estado;
     private LocalDateTime creadoEn;

@@ -34,7 +34,7 @@ public class GameService {
         if (g == null) return null;
         g.setTitulo(game.getTitulo());
         g.setDescripcion(game.getDescripcion());
-        g.setDesarrollador(game.getDesarrollador());
+        g.setDesarrolladorId(game.getDesarrolladorId());
         g.setPrecio(game.getPrecio());
         g.setFechaLanzamiento(game.getFechaLanzamiento());
         g.setCoverUrl(game.getCoverUrl());
@@ -47,7 +47,7 @@ public class GameService {
         gameRepository.deleteById(id);
     }
 
-    // Metodos DTO revisar
+    // Metodos DTO
     public GameRespuesta findDTO(Long id) {
         return gameMapper.toDTO(findById(id));
     }
@@ -56,7 +56,7 @@ public class GameService {
         return gameMapper.toDTOList(findAll());
     }
 
-    // Reportes revisar
+    // Reportes
     public List<GameRespuesta> findByCategoria(Long categoriaId) {
         return gameMapper.toDTOList(gameRepository.findByCategoriaId(categoriaId));
     }
@@ -69,8 +69,8 @@ public class GameService {
         return gameMapper.toDTOList(gameRepository.findByPrecioBetween(min, max));
     }
 
-    public List<GameRespuesta> findByDesarrollador(String desarrollador) {
-        return gameMapper.toDTOList(gameRepository.findByDesarrollador(desarrollador));
+    public List<GameRespuesta> findByDesarrollador(Long desarrolladorId) {
+        return gameMapper.toDTOList(gameRepository.findByDesarrolladorId(desarrolladorId));
     }
 
     public List<GameRespuesta> findByTitulo(String titulo) {

@@ -5,6 +5,9 @@ import com.DyGames.auth_service.dto.LoginRequest;
 import com.DyGames.auth_service.mapper.AuthMapper;
 import com.DyGames.auth_service.model.Auth;
 import com.DyGames.auth_service.repository.AuthRepository;
+import com.DyGames.auth_service.exception.EmailYaRegistradoException;
+import com.DyGames.auth_service.exception.CredencialesInvalidasException;
+import com.DyGames.auth_service.exception.CuentaDesactivadaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,7 +28,7 @@ public class AuthService {
     // Registrar
     public Auth save(Auth auth) {
         if (authRepository.existsByEmail(auth.getEmail())) {
-            throw new RuntimeException("El email ya esta registrado");
+            throw new EmailYaRegistradoException("El email ya esta registrado");
         }
         // Encripta la contraseña antes de guardar
         auth.setPassword(encoder.encode(auth.getPassword()));
@@ -38,16 +41,16 @@ public class AuthService {
                 .orElse(null);
 
         if (auth == null) {
-            throw new RuntimeException("Credenciales invalidas");
+            throw new CredencialesInvalidasException("Credenciales invalidas");
         }
 
         // Verifica la password encriptada
         if (!encoder.matches(request.getPassword(), auth.getPassword())) {
-            throw new RuntimeException("Credenciales invalidas");
+            throw new CredencialesInvalidasException("Credenciales invalidas");
         }
 
         if (!auth.getActivo()) {
-            throw new RuntimeException("Cuenta desactivada");
+            throw new CuentaDesactivadaException("Cuenta desactivada");
         }
 
         return authMapper.toDTO(auth);

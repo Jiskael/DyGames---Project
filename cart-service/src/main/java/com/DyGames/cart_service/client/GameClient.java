@@ -1,5 +1,6 @@
 package com.DyGames.cart_service.client;
 
+import com.DyGames.cart_service.dto.GameRespuesta;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,5 +9,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface GameClient {
 
     @GetMapping("/api/v1/juegos/{id}")
-    Object buscarJuegoPorId(@PathVariable Long id);
+    GameRespuesta buscarJuegoPorId(@PathVariable Long id);
 }

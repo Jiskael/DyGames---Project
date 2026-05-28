@@ -1,5 +1,7 @@
 package com.DyGames.cart_service.dto;
 
+import com.DyGames.cart_service.dto.UserRespuesta;
+import com.DyGames.cart_service.dto.GameRespuesta;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -7,8 +9,8 @@ import java.time.LocalDateTime;
 public class CartRespuesta {
 
     private Long id;
-    private Long usuarioId;
-    private Long juegoId;
+    private UserRespuesta usuario;
+    private GameRespuesta juego;
     private Double precio;
     private LocalDateTime creadoEn;
 }

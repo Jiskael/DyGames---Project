@@ -4,6 +4,7 @@ import com.DyGames.user_service.dto.UserRespuesta;
 import com.DyGames.user_service.mapper.UserMapper;
 import com.DyGames.user_service.model.User;
 import com.DyGames.user_service.repository.UserRepository;
+import com.DyGames.user_service.exception.UsernameExisteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -27,7 +28,7 @@ public class UserService {
 
     public User save(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("El username ya existe");
+            throw new UsernameExisteException("El username ya existe");
         }
         return userRepository.save(user);
     }

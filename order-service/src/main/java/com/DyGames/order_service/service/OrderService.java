@@ -2,15 +2,17 @@ package com.DyGames.order_service.service;
 
 import com.DyGames.order_service.client.CartClient;
 import com.DyGames.order_service.client.LibraryClient;
+import com.DyGames.order_service.dto.CartRespuesta;
 import com.DyGames.order_service.dto.LibraryRequest;
 import com.DyGames.order_service.dto.OrderRespuesta;
 import com.DyGames.order_service.mapper.OrderMapper;
 import com.DyGames.order_service.model.Order;
 import com.DyGames.order_service.repository.OrderRepository;
+import com.DyGames.order_service.exception.CarritoVacioException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class OrderService {
@@ -35,39 +37,34 @@ public class OrderService {
         return orderRepository.findById(id).orElse(null);
     }
 
-    // Aqui creamos el orden desde el carrito
     public Order crearOrden(Long usuarioId) {
-        // hacemos que obtenga el carrito del usuario por Feign
-        List<Object> carrito = cartClient.obtenerCarrito(usuarioId);
+        // Obtiene el carrito tipado via Feign
+        List<CartRespuesta> carrito = cartClient.obtenerCarrito(usuarioId);
 
         if (carrito == null || carrito.isEmpty()) {
-            throw new RuntimeException("El carrito esta vacio");
+            throw new CarritoVacioException("El carrito del usuario esta vacio");
         }
 
-        // Aqui calcula el total sumando los precios del carrito
-        double total = 0.0;
-        for (Object item : carrito) {
-            Map<String, Object> itemMap = (Map<String, Object>) item;
-            total += ((Number) itemMap.get("precio")).doubleValue();
-        }
+        // Calcula el total sumando precios del carrito
+        double total = carrito.stream()
+                .mapToDouble(CartRespuesta::getPrecio)
+                .sum();
 
-        // aqui pues guarda la orden
+        // Guarda la orden
         Order orden = new Order();
         orden.setUsuarioId(usuarioId);
         orden.setTotal(total);
         orden.setEstado("PAGADO");
         Order ordenGuardada = orderRepository.save(orden);
 
-        // Registramos cada juego en la biblioteca por Feign
-        for (Object item : carrito) {
-            Map<String, Object> itemMap = (Map<String, Object>) item;
-            Long juegoId = ((Number) itemMap.get("juegoId")).longValue();
+        // Registra cada juego en la biblioteca via Feign
+        for (CartRespuesta item : carrito) {
             libraryClient.agregarABiblioteca(
-                    new LibraryRequest(usuarioId, juegoId, ordenGuardada.getId())
+                    new LibraryRequest(usuarioId, item.getJuegoId(), ordenGuardada.getId())
             );
         }
 
-        // Vaciamos el carrito por Feign
+        // Vacía el carrito via Feign
         cartClient.vaciarCarrito(usuarioId);
 
         return ordenGuardada;
@@ -84,7 +81,6 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    //Y despues el copy paste de los metodos dto de las demas clases adaptado a esta
     // Metodos DTO
     public OrderRespuesta findDTO(Long id) {
         return orderMapper.toDTO(findById(id));
