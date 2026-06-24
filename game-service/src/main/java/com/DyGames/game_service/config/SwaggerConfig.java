@@ -24,7 +24,7 @@ public class SwaggerConfig {
                         .version("1.0")
                         .description("Gestión del catálogo de videojuegos de DyGames")
                         .contact(new Contact()
-                                .name("DyGames Team")
-                                .email("contacto@dygames.cl")));
+                                .name("Isaac Rivas")
+                                .email("is.rivasa@duocuc.cl")));
     }
 }
