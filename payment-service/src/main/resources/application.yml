@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: payment-service
+  config:
+    import: configserver:http://localhost:8888
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1

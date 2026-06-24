@@ -1,0 +1,245 @@
+services:
+
+  mysql-db:
+    restart: always
+    image: mysql:8.0
+    container_name: mysql_dygames
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+    healthcheck: # ← AGREGAR ESTO
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  eureka-server:
+    restart: always
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-dygames
+    ports:
+      - "8761:8761"
+    depends_on:
+      - mysql-db
+
+  config-server:
+    restart: always
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    container_name: config-dygames
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCHLOCATIONS: file:/config-microservicios
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./config-server/src/main/resources/config:/config-microservicios
+    depends_on:
+      - eureka-server
+
+  auth-service:
+    restart: always
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-dygames
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db_auth
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - config-server
+
+  user-service:
+    restart: always
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-dygames
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db_user
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - config-server
+
+  game-service:
+    restart: always
+    build:
+      context: ./game-service
+      dockerfile: Dockerfile
+    container_name: game-dygames
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db_game
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - config-server
+
+  category-service:
+    restart: always
+    build:
+      context: ./category-service
+      dockerfile: Dockerfile
+    container_name: category-dygames
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db_category
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - config-server
+
+  developer-service:
+    restart: always
+    build:
+      context: ./developer-service
+      dockerfile: Dockerfile
+    container_name: developer-dygames
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db_developer
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - config-server
+
+  cart-service:
+    restart: always
+    build:
+      context: ./cart-service
+      dockerfile: Dockerfile
+    container_name: cart-dygames
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db_cart
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - config-server
+
+  library-service:
+    restart: always
+    build:
+      context: ./library-service
+      dockerfile: Dockerfile
+    container_name: library-dygames
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db_library
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - config-server
+
+  order-service:
+    restart: always
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: order-dygames
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db_order
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - config-server
+
+  payment-service:
+    restart: always
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: payment-dygames
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db_payment
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - config-server
+
+  review-service:
+    restart: always
+    build:
+      context: ./review-service
+      dockerfile: Dockerfile
+    container_name: review-dygames
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/db_review
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql-db
+      - eureka-server
+      - config-server
+
+  api-gateway:
+    restart: always
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: gateway-dygames
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+    depends_on:
+      - eureka-server
+      - config-server
+      - auth-service
+      - user-service
+      - game-service
+      - category-service
+      - developer-service
+      - cart-service
+      - library-service
+      - order-service
+      - payment-service
+      - review-service
+
+volumes:
+  mysql_data:

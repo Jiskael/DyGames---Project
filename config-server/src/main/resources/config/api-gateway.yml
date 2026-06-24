@@ -1,0 +1,135 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins:
+                  - "http://localhost:8080"
+                  - "http://localhost:8082"
+                  - "http://localhost:8083"
+                  - "http://localhost:8084"
+                  - "http://localhost:8086"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders:
+                  - "*"
+                allowCredentials: false
+          routes:
+            # ── API routes ────────────────────────────────────────────────────
+            - id: category-service
+              uri: lb://category-service
+              predicates:
+                - Path=/api/v1/categorias/**
+
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/v1/auth/**
+
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/v1/usuarios/**
+
+            - id: game-service
+              uri: lb://game-service
+              predicates:
+                - Path=/api/v1/juegos/**
+
+            - id: cart-service
+              uri: lb://cart-service
+              predicates:
+                - Path=/api/v1/carrito/**
+
+            - id: order-service
+              uri: lb://order-service
+              predicates:
+                - Path=/api/v1/ordenes/**
+
+            - id: payment-service
+              uri: lb://payment-service
+              predicates:
+                - Path=/api/v1/pagos/**
+
+            - id: library-service
+              uri: lb://library-service
+              predicates:
+                - Path=/api/v1/biblioteca/**
+
+            - id: review-service
+              uri: lb://review-service
+              predicates:
+                - Path=/api/v1/resenas/**
+
+            - id: developer-service
+              uri: lb://developer-service
+              predicates:
+                - Path=/api/v1/desarrolladores/**
+
+            # ── Swagger / OpenAPI doc routes ──────────────────────────────────
+            - id: user-service-docs
+              uri: lb://user-service
+              predicates:
+                - Path=/user-service/v3/api-docs
+              filters:
+                - RewritePath=/user-service/(?<segment>.*), /${segment}
+
+            - id: game-service-docs
+              uri: lb://game-service
+              predicates:
+                - Path=/game-service/v3/api-docs
+              filters:
+                - RewritePath=/game-service/(?<segment>.*), /${segment}
+
+            - id: category-service-docs
+              uri: lb://category-service
+              predicates:
+                - Path=/category-service/v3/api-docs
+              filters:
+                - RewritePath=/category-service/(?<segment>.*), /${segment}
+
+            - id: library-service-docs
+              uri: lb://library-service
+              predicates:
+                - Path=/library-service/v3/api-docs
+              filters:
+                - RewritePath=/library-service/(?<segment>.*), /${segment}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    hostname: localhost
+    prefer-ip-address: false
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    # Tells the Swagger UI in the gateway where to fetch each service's OpenAPI spec
+    urls:
+      - name: user-service
+        url: /user-service/v3/api-docs
+      - name: game-service
+        url: /game-service/v3/api-docs
+      - name: category-service
+        url: /category-service/v3/api-docs
+      - name: library-service
+        url: /library-service/v3/api-docs
+  api-docs:
+    enabled: true
+  webjars:
+    prefix: ""
